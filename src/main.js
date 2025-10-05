@@ -88,17 +88,28 @@ function createArticleCard(article) {
   `;
 }
 
-function renderArticles() {
+function renderArticles(category = 'All Posts') {
   const grid = document.getElementById('articlesGrid');
-  grid.innerHTML = articles.map(article => createArticleCard(article)).join('');
+
+  let filteredArticles = articles;
+  if (category !== 'All Posts') {
+    filteredArticles = articles.filter(article => article.category === category);
+  }
+
+  grid.innerHTML = filteredArticles.map(article => createArticleCard(article)).join('');
 }
 
-document.addEventListener('DOMContentLoaded', renderArticles);
+document.addEventListener('DOMContentLoaded', () => {
+  renderArticles();
 
-const navButtons = document.querySelectorAll('.nav-btn');
-navButtons.forEach(button => {
-  button.addEventListener('click', function() {
-    navButtons.forEach(btn => btn.classList.remove('active'));
-    this.classList.add('active');
+  const navButtons = document.querySelectorAll('.nav-btn');
+  navButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      navButtons.forEach(btn => btn.classList.remove('active'));
+      this.classList.add('active');
+
+      const category = this.textContent.trim();
+      renderArticles(category);
+    });
   });
 });
